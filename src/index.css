@@ -2,18 +2,23 @@
 
 :root {
   /* Colors */
-  --bg-primary: #EBE4FF; /* Light purple background */
-  --bg-card: #ffffff; /* White card background */
-  --bg-dark: #1F2241; /* Dark blue background for auth card and CTA */
+  --bg-primary: #EBE4FF;
+  /* Light purple background */
+  --bg-card: #ffffff;
+  /* White card background */
+  --bg-dark: #1F2241;
+  /* Dark blue background for auth card and CTA */
   --bg-dark-hover: #151731;
   --text-primary: #1F2241;
   --text-secondary: #575A7B;
   --text-inverse: #ffffff;
   --text-muted: #8F91A8;
-  --accent-primary: #22C55E; /* Bright green */
-  --accent-primary-hover: #16A34A;
-  --accent-purple: #8B5CF6; /* Purple text accent */
-  
+  --accent-primary: #1ED760;
+  /* Bright green */
+  --accent-primary-hover: #1DB954;
+  --accent-purple: #8B5CF6;
+  /* Purple text accent */
+
   --border-color: #E2E8F0;
   --border-dark: rgba(255, 255, 255, 0.1);
 
@@ -112,8 +117,15 @@ input {
 
 /* Animations */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .animate-fade-in {
@@ -121,9 +133,17 @@ input {
 }
 
 @keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-  100% { transform: translateY(0px); }
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
 }
 
 .animate-float {

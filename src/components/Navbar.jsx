@@ -50,7 +50,7 @@ const Navbar = () => {
             <div>
                 <Link to="/login">
                     <Button variant="primary" style={{ padding: '0.75rem 2rem', borderRadius: '100px' }}>
-                        Get Started
+                        Get Started Free
                     </Button>
                 </Link>
             </div>

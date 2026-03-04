@@ -80,7 +80,7 @@ const SignUp = () => {
                             type="password"
                         />
 
-                        <Button variant="primary" style={{ width: '100%', marginTop: '0.5rem', padding: '1rem', justifyItems: 'center' }}>
+                        <Button variant="primary" style={{ width: '100%', backgroundColor: '#22c55e', marginTop: '0.5rem', padding: '1rem', justifyItems: 'center' }}>
                             CREATE ACCOUNT
                         </Button>
                     </form>
