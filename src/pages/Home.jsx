@@ -1,12 +1,10 @@
 import { ChevronRight } from "lucide-react";
-import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Button from "../components/Button";
 
 const Home = () => {
     return (
         <div style={{ position: "relative", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-            <Navbar />
 
             <main
                 style={{

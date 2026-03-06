@@ -47,9 +47,32 @@ const Navbar = () => {
                 <Link to="#" style={{ transition: 'color 0.2s', ':hover': { color: 'var(--text-primary)' } }}>FAQ</Link>
             </div>
 
-            <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+                <Link to="/analytics">
+                    <Button variant="primary" style={{
+                        backgroundColor: "#22c55e",
+                        color: "white",
+                        border: "none",
+                        padding: "0.6rem 1.4rem",
+                        borderRadius: "8px",
+                        fontWeight: "600",
+                        cursor: "pointer",
+                        boxShadow: "0 4px 12px rgba(34,197,94,0.35)",
+                        transition: "0.2s"
+                    }}>Analytics</Button>
+                </Link>
                 <Link to="/login">
-                    <Button variant="primary" style={{ padding: '0.75rem 2rem', borderRadius: '100px' }}>
+                    <Button variant="primary" style={{
+                        backgroundColor: "#22c55e",
+                        color: "white",
+                        border: "none",
+                        padding: "0.6rem 1.4rem",
+                        borderRadius: "8px",
+                        fontWeight: "600",
+                        cursor: "pointer",
+                        boxShadow: "0 4px 12px rgba(34,197,94,0.35)",
+                        transition: "0.2s"
+                    }}>
                         Get Started Free
                     </Button>
                 </Link>

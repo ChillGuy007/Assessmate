@@ -6,26 +6,6 @@ import Button from '../components/Button';
 const SignUp = () => {
     return (
         <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-            {/* Auth Navbar */}
-            <nav style={{ padding: '2rem 4rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                    <div style={{
-                        background: 'var(--accent-purple)',
-                        color: 'white',
-                        padding: '0.5rem',
-                        borderRadius: '0.5rem',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center'
-                    }}>
-                        <GraduationCap size={24} />
-                    </div>
-                    <span style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)' }}>AssessMate</span>
-                </Link>
-                <div style={{ display: 'flex', gap: '2rem', fontSize: '0.95rem', fontWeight: 500, color: 'var(--text-secondary)' }}>
-                    <Link to="/">Back to Home</Link>
-                </div>
-            </nav>
 
             <main style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem', position: 'relative' }}>
                 {/* Decorative elements behind the card */}
