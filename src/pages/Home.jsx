@@ -163,7 +163,7 @@ const Home = () => {
                                     borderRadius: "100px",
                                 }}
                             >
-                                Contact Sales
+                                Get Help
                             </Button>
                         </div>
                     </div>

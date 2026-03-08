@@ -1,11 +1,26 @@
 import { GraduationCap, Mail, Lock, ArrowRight, Eye } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import Input from '../components/Input';
 import Button from '../components/Button';
+import { useAuth } from '../contexts/AuthContext';
 
 const Login = () => {
   const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const { login } = useAuth();
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    if (/\d/.test(email)) {
+      login({ email, role: 'student' });
+      navigate('/student-profile');
+    } else {
+      login({ email, role: 'faculty' });
+      navigate('/faculty-profile');
+    }
+  };
+
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       {/* Auth Navbar */}
@@ -61,12 +76,14 @@ const Login = () => {
             <p style={{ color: 'var(--text-muted)' }}>Please enter your institutional details</p>
           </div>
 
-          <form style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }} onSubmit={(e) => e.preventDefault()}>
+          <form style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }} onSubmit={handleLogin}>
             <Input
               label="INSTITUTIONAL EMAIL"
               placeholder="student@college.edu"
               icon={Mail}
               type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
             <Input
               label="PASSWORD"
@@ -85,14 +102,10 @@ const Login = () => {
                 fontWeight: "600",
                 boxShadow: "0 6px 18px rgba(34,197,94,0.35)",
               }}
+              type="submit"
             >
               Login <ArrowRight size={18} />
             </Button>
-
-            onSubmit={(e) => {
-              e.preventDefault();
-              navigate("/analytics");
-            }}
           </form>
 
           <div style={{ marginTop: '2.5rem', textAlign: 'center', fontSize: '0.875rem' }}>

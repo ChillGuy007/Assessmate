@@ -2,9 +2,11 @@ import { Link } from 'react-router-dom';
 import { GraduationCap } from 'lucide-react';
 import Button from './Button';
 import { useState, useEffect } from 'react';
+import { useAuth } from '../contexts/AuthContext';
 
 const GlobalNavbar = () => {
     const [scrolled, setScrolled] = useState(false);
+    const { user, logout } = useAuth();
 
     useEffect(() => {
         const handleScroll = () => {
@@ -83,23 +85,36 @@ const GlobalNavbar = () => {
                     <Link to="/feedback" style={{ textDecoration: 'none', color: 'inherit', transition: 'color 0.2s' }}>Feedback</Link>
                 </div>
 
-                {/* Right side: Login */}
+                {/* Right side: Login / Logout */}
                 <div>
-                    <Link to="/login" style={{ textDecoration: 'none' }}>
-                        <Button variant="primary" style={{
-                            backgroundColor: "white",
-                            color: "var(--text-primary)",
-                            border: "none",
-                            padding: "0.6rem 1.5rem",
-                            borderRadius: "100px", // Keep it pill-shaped to match the bubble
-                            fontWeight: "600",
-                            cursor: "pointer",
-                            boxShadow: "0 4px 14px rgba(0,0,0,0.05)",
-                            transition: "0.2s"
-                        }}>
-                            Login
-                        </Button>
-                    </Link>
+                    {user ? (
+                        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                            <Button variant="secondary" onClick={logout} style={{
+                                padding: "0.8rem 1.5rem",
+                                borderRadius: "100px",
+                                backgroundColor: "rgba(255,255,255,0.1)",
+                                color: "white",
+                                fontWeight: "600",
+                                border: "none"
+                            }}>
+                                Logout
+                            </Button>
+                        </div>
+                    ) : (
+                        <Link to="/login" style={{ textDecoration: 'none' }}>
+                            <Button variant="primary" style={{
+                                padding: "1rem 2.5rem",
+                                borderRadius: "100px",
+                                backgroundColor: "#22c55e",
+                                color: "white",
+                                fontWeight: "600",
+                                boxShadow: "0 6px 18px rgba(34,197,94,0.35)",
+                                border: "none"
+                            }}>
+                                Login
+                            </Button>
+                        </Link>
+                    )}
                 </div>
             </nav>
         </div>
