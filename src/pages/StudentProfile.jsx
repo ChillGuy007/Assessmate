@@ -1,4 +1,7 @@
 import { GraduationCap, Mail, Star, BookOpen, IdCard } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { useAuth } from '../contexts/AuthContext';
+import { feedbackAPI, usersAPI } from '../services/api.js';
 
 const StatCard = ({ title, value, subtitle, suffix }) => (
     <div style={{
@@ -47,8 +50,8 @@ const CourseItem = ({ name, code, status, score, badge }) => (
                 borderRadius: '9999px',
                 fontSize: '0.75rem',
                 fontWeight: 600,
-                backgroundColor: badge === 'Neutral' ? '#e2e8f0' : '#dcfce3',
-                color: badge === 'Neutral' ? '#64748b' : '#16a34a'
+                backgroundColor: badge === 'Neutral' ? '#e2e8f0' : badge === 'Positive' ? '#dcfce3' : '#fee2e2',
+                color: badge === 'Neutral' ? '#64748b' : badge === 'Positive' ? '#16a34a' : '#dc2626'
             }}>
                 {badge}
             </span>
@@ -57,6 +60,60 @@ const CourseItem = ({ name, code, status, score, badge }) => (
 );
 
 const StudentProfile = () => {
+    const { user } = useAuth();
+    const [profile, setProfile] = useState(null);
+    const [feedbackHistory, setFeedbackHistory] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
+
+    useEffect(() => {
+        const loadProfile = async () => {
+            if (!user?.id) {
+                setLoading(false);
+                return;
+            }
+
+            try {
+                setLoading(true);
+                setError('');
+                const [profileData, feedbackData] = await Promise.all([
+                    usersAPI.getProfile(user.id),
+                    feedbackAPI.getStudentFeedback(user.id)
+                ]);
+                setProfile(profileData);
+                setFeedbackHistory(feedbackData);
+            } catch (err) {
+                setError(err.message || 'Failed to load student profile');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadProfile();
+    }, [user?.id]);
+
+    if (loading) {
+        return (
+            <div style={{ minHeight: '100vh', backgroundColor: '#F5F3FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ color: '#6b7280' }}>Loading student profile...</div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div style={{ minHeight: '100vh', backgroundColor: '#F5F3FF', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
+                <div style={{ background: 'white', borderRadius: '1rem', padding: '1.5rem 2rem', color: '#dc2626' }}>{error}</div>
+            </div>
+        );
+    }
+
+    const fullName = profile ? `${profile.first_name || ''} ${profile.last_name || ''}`.trim() : 'Student';
+    const courses = profile?.courses || [];
+    const averageRating = feedbackHistory.length
+        ? (feedbackHistory.reduce((sum, item) => sum + (Number(item.rating) || 0), 0) / feedbackHistory.length).toFixed(1)
+        : '0.0';
+
     return (
         <div style={{ minHeight: '100vh', backgroundColor: '#F5F3FF', paddingTop: '80px' }}>
             <main style={{ padding: '2rem', maxWidth: '1000px', margin: '0 auto', fontFamily: 'sans-serif' }}>
@@ -83,26 +140,26 @@ const StudentProfile = () => {
                     }}></div>
 
                     <div style={{ position: 'relative', zIndex: 1 }}>
-                        <h1 style={{ fontSize: '2.5rem', fontWeight: 700, margin: 0 }}>Alex Johnson</h1>
+                        <h1 style={{ fontSize: '2.5rem', fontWeight: 700, margin: 0 }}>{fullName || 'Alex Johnson'}</h1>
                         <p style={{ fontSize: '1.25rem', opacity: 0.9, marginTop: '0.5rem', marginBottom: '2rem' }}>
-                            Computer Science Major
+                            {profile?.role === 'student' ? 'Computer Science Major' : 'Student'}
                         </p>
 
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', opacity: 0.9 }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                                     <GraduationCap size={18} />
-                                    <span>University of Technology</span>
+                                    <span>{profile?.institution || 'University of Technology'}</span>
                                 </div>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                     <IdCard size={18} />
                                     <span style={{ opacity: 0.6 }}>ID</span>
-                                    <span>10024563</span>
+                                    <span>{profile?.id || '—'}</span>
                                 </div>
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', opacity: 0.9 }}>
                                 <Mail size={18} />
-                                <span>alex.johnson@university.edu</span>
+                                <span>{profile?.email || user?.email || 'alex.johnson@university.edu'}</span>
                             </div>
                         </div>
                     </div>
@@ -126,24 +183,22 @@ const StudentProfile = () => {
                 <div style={{ display: 'flex', gap: '1.5rem', marginTop: '2.5rem' }}>
                     <StatCard
                         title={<><BookOpen size={16} /> Total Courses</>}
-                        value="4"
+                        value={String(courses.length)}
                     />
                     <StatCard
                         title="Avg. Feedback Score"
-                        value="4.3"
+                        value={averageRating}
                         suffix={
                             <div style={{ display: 'flex', gap: '0.1rem' }}>
-                                <Star size={16} fill="#fbbf24" color="#fbbf24" />
-                                <Star size={16} fill="#fbbf24" color="#fbbf24" />
-                                <Star size={16} fill="#fbbf24" color="#fbbf24" />
-                                <Star size={16} fill="#fbbf24" color="#fbbf24" />
-                                <Star size={16} color="#d1d5db" />
+                                {[...Array(5)].map((_, index) => (
+                                    <Star key={index} size={16} fill={index < Math.round(Number(averageRating)) ? '#fbbf24' : 'none'} color={index < Math.round(Number(averageRating)) ? '#fbbf24' : '#d1d5db'} />
+                                ))}
                             </div>
                         }
                     />
                     <StatCard
                         title="Feedback Submitted"
-                        value="15"
+                        value={String(feedbackHistory.length)}
                         suffix={
                             <div style={{ display: 'flex', gap: '0.1rem' }}>
                                 <Star size={16} fill="#10b981" color="#10b981" />
@@ -164,8 +219,20 @@ const StudentProfile = () => {
                         overflow: 'hidden',
                         boxShadow: '0 4px 6px rgba(0,0,0,0.05)'
                     }}>
-                        <CourseItem name="Data Structures" code="PLE213" status="Submitted" score={3} badge="Neutral" />
-                        <CourseItem name="Artificial Intelligence" code="PLE222" status="Pending" score={0} badge="New" />
+                        {feedbackHistory.length > 0 ? feedbackHistory.map((item) => (
+                            <CourseItem
+                                key={item.id}
+                                name={item.name}
+                                code={item.code}
+                                status={item.sentiment === 'positive' ? 'Submitted' : 'Reviewed'}
+                                score={Number(item.rating) || 0}
+                                badge={item.sentiment ? item.sentiment[0].toUpperCase() + item.sentiment.slice(1) : 'Neutral'}
+                            />
+                        )) : (
+                            <div style={{ background: 'white', padding: '1.5rem 2rem', color: '#6b7280' }}>
+                                No feedback submitted yet.
+                            </div>
+                        )}
                     </div>
                 </div>
 

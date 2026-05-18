@@ -1,4 +1,7 @@
 import { GraduationCap, Mail, Phone, ChevronRight } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { useAuth } from '../contexts/AuthContext';
+import { usersAPI } from '../services/api.js';
 
 const StatCard = ({ title, value, subtitle, suffix }) => (
     <div style={{
@@ -23,6 +26,52 @@ const StatCard = ({ title, value, subtitle, suffix }) => (
 );
 
 const FacultyProfile = () => {
+    const { user } = useAuth();
+    const [profile, setProfile] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
+
+    useEffect(() => {
+        const loadProfile = async () => {
+            if (!user?.id) {
+                setLoading(false);
+                return;
+            }
+
+            try {
+                setLoading(true);
+                setError('');
+                const profileData = await usersAPI.getProfile(user.id);
+                setProfile(profileData);
+            } catch (err) {
+                setError(err.message || 'Failed to load faculty profile');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadProfile();
+    }, [user?.id]);
+
+    if (loading) {
+        return (
+            <div style={{ minHeight: '100vh', backgroundColor: '#F5F3FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ color: '#6b7280' }}>Loading faculty profile...</div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div style={{ minHeight: '100vh', backgroundColor: '#F5F3FF', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
+                <div style={{ background: 'white', borderRadius: '1rem', padding: '1.5rem 2rem', color: '#dc2626' }}>{error}</div>
+            </div>
+        );
+    }
+
+    const fullName = profile ? `${profile.first_name || ''} ${profile.last_name || ''}`.trim() : 'Faculty';
+    const courses = profile?.courses || [];
+
     return (
         <div style={{ minHeight: '100vh', backgroundColor: '#F5F3FF', paddingTop: '80px' }}>
             <main style={{ padding: '2rem', maxWidth: '1000px', margin: '0 auto', fontFamily: 'sans-serif' }}>
@@ -49,7 +98,7 @@ const FacultyProfile = () => {
                     }}></div>
 
                     <div style={{ position: 'relative', zIndex: 1 }}>
-                        <h1 style={{ fontSize: '2.5rem', fontWeight: 700, margin: 0 }}>Dr. Sarah Thompson</h1>
+                        <h1 style={{ fontSize: '2.5rem', fontWeight: 700, margin: 0 }}>{fullName || 'Dr. Sarah Thompson'}</h1>
                         <p style={{ fontSize: '1.25rem', opacity: 0.9, marginTop: '0.5rem', marginBottom: '2rem' }}>
                             Professor of Computer Science
                         </p>
@@ -57,15 +106,15 @@ const FacultyProfile = () => {
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', opacity: 0.9 }}>
                                 <GraduationCap size={18} />
-                                <span>Computer Science Department</span>
+                                <span>{profile?.institution || 'Computer Science Department'}</span>
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', opacity: 0.9 }}>
                                 <Mail size={18} />
-                                <span>sarah.thompson@university.edu</span>
+                                <span>{profile?.email || user?.email || 'sarah.thompson@university.edu'}</span>
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', opacity: 0.9 }}>
                                 <Phone size={18} />
-                                <span>123-456-7890</span>
+                                <span>{profile?.phone || '123-456-7890'}</span>
                             </div>
                         </div>
                     </div>
@@ -95,11 +144,11 @@ const FacultyProfile = () => {
                         overflow: 'hidden',
                         boxShadow: '0 4px 6px rgba(0,0,0,0.05)'
                     }}>
-                        {[
+                        {(courses.length > 0 ? courses : [
                             { name: 'Data Structures', code: 'SDEL456' },
                             { name: 'Artificial Intelligence', code: 'PLE122' },
                             { name: 'Algorithms', code: 'PLE211' }
-                        ].map((course, idx) => (
+                        ]).map((course, idx) => (
                             <div key={idx} style={{
                                 display: 'flex',
                                 justifyContent: 'space-between',

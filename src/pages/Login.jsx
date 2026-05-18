@@ -8,16 +8,24 @@ import { useAuth } from '../contexts/AuthContext';
 const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
   const { login } = useAuth();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    if (/\d/.test(email)) {
-      login({ email, role: 'student' });
-      navigate('/student-profile');
-    } else {
-      login({ email, role: 'faculty' });
-      navigate('/faculty-profile');
+    setErrorMsg('');
+    setLoading(true);
+    try {
+      const result = await login(email, password);
+      if (result.user) {
+        navigate(result.user.role === 'student' ? '/student-profile' : '/faculty-profile');
+      }
+    } catch (error) {
+      setErrorMsg(error.message || 'Login failed. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -91,7 +99,21 @@ const Login = () => {
               icon={Lock}
               rightIcon={Eye}
               type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
+
+            {errorMsg && (
+              <div style={{
+                padding: '0.75rem 1rem',
+                backgroundColor: '#fee2e2',
+                color: '#dc2626',
+                borderRadius: '0.5rem',
+                fontSize: '0.875rem'
+              }}>
+                {errorMsg}
+              </div>
+            )}
 
             <Button
               style={{
@@ -103,8 +125,9 @@ const Login = () => {
                 boxShadow: "0 6px 18px rgba(34,197,94,0.35)",
               }}
               type="submit"
+              disabled={loading}
             >
-              Login <ArrowRight size={18} />
+              {loading ? 'Logging in...' : 'Login'} {!loading && <ArrowRight size={18} />}
             </Button>
           </form>
 
