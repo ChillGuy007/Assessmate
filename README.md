@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
@@ -15,7 +14,6 @@ The React Compiler is not enabled on this template because of its impact on dev 
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-=======
 # Assessmate - Institutional Assessment Platform
 
 A modern, full-stack web application for managing institutional assessments, student feedback, course evaluations, and faculty analytics.
@@ -347,4 +345,3 @@ For issues or questions:
 **Getting Started**: Read this README for setup and [backend/README.md](./backend/README.md) for backend details
 
 **Current Status**: ✅ Fully functional - Ready to use!
->>>>>>> 70e4820 (Added backend and database services)
